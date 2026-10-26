@@ -565,7 +565,7 @@ function avisosHTML(){
   return `<section class="card"><div class="lbl">Avisos en el iPhone</div><h3>${activos?"Avisos activados":"Activa los avisos"}</h3>
     <div class="tpl" style="grid-template-columns:76px 1fr"><b>L X V S</b><span>Entrenar a las 18:30</span><b>M</b><span>Entrenar a las 19:30</span><b>J</b><span>Entrenar a las 19:15</span><b>CADA DÍA</b><span>Estirar a las 21:30, antes de dormir</span><b>TESTS</b><span>Recordatorios hasta que lo apuntes</span></div>
     ${nota}
-    <div class="form"><label>Servidor de avisos<input id="av-url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…workers.dev" value="${esc(c.url||"")}"></label>
+    <div class="form"><label>Servidor de avisos<input id="av-url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…workers.dev" value="${esc(c.url||"https://camino-al-mate-avisos.moyyano.workers.dev")}"></label>
       <label>Clave<input id="av-clave" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tu clave" value="${esc(c.clave||"")}"></label></div>
     <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="av-on">${activos?"Volver a activar":"Activar avisos"}</button>${activos?'<button class="btn ghost" id="av-test">Enviar prueba</button>':""}</div></section>`;
 }
