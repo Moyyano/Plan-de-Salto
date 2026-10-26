@@ -79,14 +79,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .note.info{background:var(--bg);color:var(--muted)}
 .ex{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)}
 .ex:last-child{border-bottom:0}
-.ex input[type=checkbox]{width:22px;height:22px;accent-color:var(--rim);margin:0}
 .ex .name{min-width:0}
 .ex .name strong{font-weight:600;display:block}
 .ex .how{display:block;font-size:14px;color:var(--muted)}
 .ex .rx{font-family:var(--display);font-weight:700;font-size:17px;color:var(--rim);font-variant-numeric:tabular-nums}
 .ex .rx s{color:var(--muted);font-weight:600;margin-right:4px}
 .ex .bullet{width:8px;height:8px;border-radius:50%;background:var(--line);justify-self:center}
-.ex.ill{grid-template-columns:28px 88px minmax(0,1fr)}
+
 .ex.ill.plain{grid-template-columns:88px minmax(0,1fr)}
 .fig{width:88px;max-width:100%;height:auto;display:block;background:var(--bg);border-radius:8px}
 .fig polyline{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:4}
@@ -97,12 +96,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .fig .tw{fill:none;stroke:var(--deload);stroke-width:2.5;stroke-linecap:round}
 .fig .bar{stroke:var(--ink);stroke-width:3}.fig .pl,.fig .db{fill:var(--muted)}.fig .plc{fill:none;stroke:var(--muted);stroke-width:3}
 .fig .cable{stroke:var(--muted);stroke-width:1.5}.fig .rope{fill:none;stroke:var(--deload);stroke-width:2;stroke-dasharray:4 3}
-.ex.ill2{grid-template-columns:28px 64px minmax(0,1fr) auto}
+.ex.ill2{grid-template-columns:64px minmax(0,1fr) auto}
 .ex.ill2 .fig{width:64px}
 .kg{display:flex;align-items:center;gap:4px}
 .kg input{width:64px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:600 16px var(--body);text-align:right;font-variant-numeric:tabular-nums}
 .kg em{font-style:normal;font-size:13px;color:var(--muted)}
-.ex.done .name strong{color:var(--muted);text-decoration:line-through}
 
 .knee{padding:16px 18px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
 textarea{width:100%;min-height:64px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:15px var(--body);resize:vertical}
@@ -132,15 +130,6 @@ ul.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;f
 /* Estirar */
 .strow{flex-direction:row;align-items:center;justify-content:space-between;gap:12px}
 .strow strong{font-family:var(--display);font-size:20px;display:block}
-.week7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.week7 div{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--display);font-size:12px;letter-spacing:.08em;color:var(--muted)}
-.week7 span{width:22px;height:22px;border-radius:50%;border:2px solid var(--line)}
-.week7 .on span{background:var(--ok);border-color:var(--ok)}
-.week7 .hoy b{color:var(--rim)}
-.streak{display:flex;align-items:baseline;gap:8px}
-.streak .big{font-family:var(--display);font-weight:800;font-size:44px;line-height:1;color:var(--ok);font-variant-numeric:tabular-nums}
-.bar{height:8px;border-radius:999px;background:var(--bg);overflow:hidden}
-.bar i{display:block;height:100%;background:var(--ok);border-radius:999px}
 
 /* Progreso */
 .gauge{width:100%;max-width:100%;height:auto;display:block}
@@ -368,7 +357,6 @@ async function guardarEst(k,data){
   if(db){ await db.doc("estiramientos/"+k).set(data) }
   else { estir[k]=data; lsSet("mate_estir",estir) }
 }
-function racha(){let n=0,d=new Date();if(!estir[key(d)]?.completo)d=addDays(d,-1);while(estir[key(d)]?.completo){n++;d=addDays(d,-1)}return n}
 
 /* ---------- Estado de vista ---------- */
 let tab="hoy", sel=new Date(), dirty=false;
@@ -387,7 +375,7 @@ function renderBoard(){
     const pt=proximoTest(hoy);
     if(pt&&!i.testWeek){const dias=dnum(pt)-dnum(hoy);chips+=`<span class="chip normal">Próximo test en ${dias} días</span>`}
   }
-  chips+= estir[key(hoy)]?.completo?'<span class="chip ok">Estiramientos hechos</span>':`<span class="chip normal">Estirar a las ${AVISO_ESTIRAR}</span>`;
+  chips+=`<span class="chip normal">Estirar a las ${AVISO_ESTIRAR}</span>`;
   $("board").innerHTML=`<div><div class="lbl">Semana</div><div class="big">${String(sem).padStart(2,"0")}<small> / ${total}</small></div></div>
   <div class="right"><div class="lbl">Camino al mate</div><div class="fase">${i.fase===2?"Fase 2":"Fase 1 · Fuerza base"}</div></div>
   <div class="chips">${chips}</div>`;
@@ -409,15 +397,13 @@ function renderHoy(){
   if(i.fase===2) notas+=`<div class="note info">Has terminado la fase 1. Pide a Claude la fase 2 con tus resultados; mientras tanto sigue con esta plantilla.</div>`;
   if(s.nota) notas+=`<div class="note info">${esc(s.nota)}</div>`;
   const filas=s.ej.map(e=>{const v=ex[e.id]||{};
-    return `<div class="ex ill2 ${v.hecho?"done":""}" data-ex="${e.id}">
-      <input type="checkbox" id="chk-${e.id}" ${v.hecho?"checked":""} aria-label="Hecho: ${esc(e.n)}">
-      <label for="chk-${e.id}">${fig(e.id)}</label>
-      <label class="name" for="chk-${e.id}"><strong>${esc(e.n)}</strong>
-        <span class="rx">${e.sOrig?`<s>${e.sOrig}×</s>`:""}${e.s?e.s+" × ":""}${esc(e.r)}</span></label>
+    return `<div class="ex ill2" data-ex="${e.id}">
+      ${fig(e.id)}
+      <div class="name"><strong>${esc(e.n)}</strong>
+        <span class="rx">${e.sOrig?`<s>${e.sOrig}×</s>`:""}${e.s?e.s+" × ":""}${esc(e.r)}</span></div>
       ${e.kg?`<span class="kg"><input id="kg-${e.id}" inputmode="decimal" placeholder="—" value="${v.kg??""}" aria-label="Kilos ${esc(e.n)}"><em>kg</em></span>`:"<span></span>"}
     </div>`}).join("");
   const conEj=s.ej.length>0;
-  const est=estir[k]||{}, estN=EST.noche.ej.filter(e=>est.hecho?.[e.id]).length;
   $("view").innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
     <div class="daynav"><button id="prev" aria-label="Día anterior">‹</button>
       <div class="when"><div class="lbl">${dnum(d)===hoyN?"Hoy":i.antes?"Antes del plan":"Semana "+i.week}</div><h2>${fmt(d,{weekday:"long",day:"numeric",month:"long"})}</h2></div>
@@ -431,19 +417,18 @@ function renderHoy(){
       <div class="actions"><button class="btn" id="save">Guardar sesión</button><span class="status" id="st">${saved.actualizado?"Guardada "+new Date(saved.actualizado).toLocaleString("es-ES",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):modo==="local"?"Guardado en este iPhone":""}</span></div>`:""}
     </section>
     <section class="card strow"><div><div class="lbl">Estiramientos · ${AVISO_ESTIRAR}</div>
-      <strong>${est.completo?"Hechos":estN?`${estN} de ${EST.noche.ej.length} hechos`:"Pendientes"} · ${EST.noche.min} min</strong></div>
+      <strong>${EST.noche.t} · ${EST.noche.min} min</strong></div>
       <button class="btn ghost" id="go-est">Abrir</button></section></div>`;
   $("prev").onclick=()=>go(-1); $("next").onclick=()=>go(1);
   $("go-est").onclick=()=>setTab("est");
   document.querySelectorAll(".strip button").forEach(b=>b.onclick=()=>{const [y,m,dd]=b.dataset.day.split("-").map(Number);sel=new Date(y,m-1,dd);dirty=false;renderHoy()});
-  document.querySelectorAll(".ex input[type=checkbox]").forEach(c=>c.onchange=()=>{c.closest(".ex").classList.toggle("done",c.checked);dirty=true});
   document.querySelectorAll(".kg input,#notas").forEach(x=>x.oninput=()=>dirty=true);
   const sv=$("save"); if(sv) sv.onclick=()=>save(d,s);
 }
 function go(n){sel=addDays(sel,n);dirty=false;renderHoy()}
 async function save(d,s){
   const i=info(d), ejercicios={};
-  s.ej.forEach(e=>{const c=$("chk-"+e.id), k=$("kg-"+e.id);const o={hecho:!!(c&&c.checked)};
+  s.ej.forEach(e=>{const k=$("kg-"+e.id);const o={};
     if(k&&k.value.trim()!==""){const n=parseFloat(k.value.replace(",","."));if(!isNaN(n))o.kg=n}
     ejercicios[e.id]=o});
   const data={fecha:key(d),semana:i.week,sesion:s.t,descarga:i.descarga,ejercicios,
@@ -455,43 +440,23 @@ async function save(d,s){
 }
 
 function renderEst(){
-  const hoy=new Date(), k=key(hoy), s=estir[k]||{}, h=s.hecho||{};
-  const total=EST.noche.ej.length, hechos=EST.noche.ej.filter(e=>h[e.id]).length, r=racha();
-  let w7="";for(let n=6;n>=0;n--){const x=addDays(hoy,-n);w7+=`<div class="${estir[key(x)]?.completo?"on":""} ${n===0?"hoy":""}"><b>${DIAS[x.getDay()]}</b><span></span></div>`}
-  const fila=(e,chk)=>chk
-    ?`<div class="ex ill ${h[e.id]?"done":""}"><input type="checkbox" id="est-${e.id}" ${h[e.id]?"checked":""}>
-       <label for="est-${e.id}">${fig(e.id)}</label>
-       <label class="name" for="est-${e.id}"><strong>${esc(e.n)}</strong><span class="how">${esc(e.c)}</span><span class="rx">${esc(e.r)}</span></label></div>`
-    :`<div class="ex ill plain">${fig(e.id)}<div class="name"><strong>${esc(e.n)}</strong><span class="how">${esc(e.c)}</span><span class="rx">${esc(e.r)}</span></div></div>`;
+  const fila=e=>`<div class="ex ill plain">${fig(e.id)}<div class="name"><strong>${esc(e.n)}</strong><span class="how">${esc(e.c)}</span><span class="rx">${esc(e.r)}</span></div></div>`;
   $("view").innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
-  <section class="card"><div class="lbl">Constancia</div>
-    <div class="streak"><span class="big">${r}</span><span>${r===1?"día seguido":"días seguidos"} estirando</span></div>
-    <div class="week7">${w7}</div>
-    <p class="empty" style="margin:0">Aviso diario a las ${AVISO_ESTIRAR} con la app Atajos del iPhone.</p></section>
   <section class="session">
-    <div class="shead"><div class="lbl">Cada día · ${EST.noche.min} min · antes de dormir</div><h3>${EST.noche.t}</h3>
-      <div class="bar" aria-label="${hechos} de ${total}"><i style="width:${hechos/total*100}%"></i></div>
+    <div class="shead"><div class="lbl">Cada día · ${EST.noche.min} min · aviso a las ${AVISO_ESTIRAR}</div><h3>${EST.noche.t}</h3>
       <div class="note info">Estiramiento estático suave: llega a tensión, nunca a dolor, y respira lento. Los domingos haz 3 series en vez de 2. En los dibujos, la zona que estiras va en naranja.</div></div>
-    ${EST.noche.ej.map(e=>fila(e,true)).join("")}</section>
+    ${EST.noche.ej.map(fila).join("")}</section>
   <section class="session">
     <div class="shead"><div class="lbl">Días de entreno · ${EST.antes.min} min</div><h3>${EST.antes.t}</h3>
       <div class="note test">Solo movimientos dinámicos. Mantener estiramientos largos antes de saltar te quita potencia.</div></div>
-    ${EST.antes.ej.map(e=>fila(e,false)).join("")}</section>
+    ${EST.antes.ej.map(fila).join("")}</section>
   <section class="session">
     <div class="shead"><div class="lbl">Al terminar · ${EST.despues.min} min</div><h3>${EST.despues.t}</h3></div>
-    ${EST.despues.ej.map(e=>fila(e,false)).join("")}</section>
+    ${EST.despues.ej.map(fila).join("")}</section>
   <section class="card"><h3>Por qué así</h3><ul class="rules">
     <li>Para saltar más importan el tobillo (gemelo y sóleo), el flexor de cadera y el cuádriceps: cuanto más rango tengas, mejor cargas el salto.</li>
     <li>La constancia gana a la intensidad: 13 minutos cada día rinden más que una hora el domingo.</li>
     <li>Si un día entrenas tarde, la rutina de después de entrenar más la de la noche se pueden juntar en una sola.</li></ul></section></div>`;
-  document.querySelectorAll("[id^=est-]").forEach(c=>c.onchange=async()=>{
-    const hecho={};EST.noche.ej.forEach(e=>{const x=$("est-"+e.id);if(x&&x.checked)hecho[e.id]=true});
-    const completo=Object.keys(hecho).length===total;
-    try{await guardarEst(k,{fecha:k,hecho,completo,actualizado:Date.now()});
-      if(modo==="local"){renderEst();renderBoard()}
-      if(completo)toast("Rutina completa. Buen trabajo.")}
-    catch(e){toast("No se pudo guardar. Revisa la conexión y vuelve a intentarlo.")}
-  });
 }
 
 function renderPlan(){
