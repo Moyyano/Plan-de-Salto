@@ -184,11 +184,12 @@ const SESIONES = {
     {id:"bulg",n:"Sentadilla búlgara con mancuernas",s:3,r:"8/pierna",kg:1},
     {id:"calf",n:"Elevación de talones",s:3,r:"12",kg:1},
     {id:"wall",n:"Sentadilla en pared (tendón)",s:4,r:"45 s"}]},
-  2:{t:"Tren superior A + core",corto:"Superior",ej:[
-    {id:"bench",n:"Press banca en multipower",s:3,r:"8",kg:1},
-    {id:"row",n:"Remo con mancuerna",s:3,r:"10",kg:1},
-    {id:"ohp",n:"Press militar con mancuernas",s:3,r:"10",kg:1},
-    {id:"lat",n:"Jalón al pecho en polea",s:3,r:"10",kg:1},
+  2:{t:"Empuje: pecho, hombro y tríceps + core",corto:"Empuje",ej:[
+    {id:"incl",n:"Press banca inclinado",s:4,r:"8",kg:1},
+    {id:"cflyb",n:"Cruce de poleas para pecho, tumbado en banco",s:3,r:"12",kg:1},
+    {id:"lateral",n:"Elevaciones laterales",s:3,r:"12",kg:1},
+    {id:"tri_alto",n:"Extensión de tríceps en polea alta",s:3,r:"12",kg:1},
+    {id:"tri_bajo",n:"Extensión de tríceps sobre la cabeza desde polea baja",s:3,r:"12",kg:1},
     {id:"plank",n:"Plancha",s:3,r:"40 s"},
     {id:"pallof",n:"Pallof press en polea",s:3,r:"10/lado"}]},
   3:{t:"Saltos y técnica",corto:"Saltos",ej:[
@@ -197,19 +198,23 @@ const SESIONES = {
     {id:"appr",n:"Saltos con carrera al 80-90 %, cuidando el último paso",r:"6-8 saltos"},
     {id:"slhop",n:"Saltos a una pierna, bajos y controlados",s:3,r:"5/pierna"},
     {id:"wall",n:"Sentadilla en pared (tendón)",s:3,r:"45 s"}]},
-  4:{t:"Pierna B · Unilateral",corto:"Pierna B",ej:[
+  4:{t:"Pierna B · Unilateral + core",corto:"Pierna B",ej:[
     {id:"cal",n:"Calentamiento dinámico (pestaña Estirar)",r:"10 min"},
     {id:"step",n:"Subida a cajón alto con mancuernas",s:3,r:"6/pierna",kg:1},
     {id:"slrdl",n:"Peso muerto rumano a una pierna",s:3,r:"8/pierna",kg:1},
     {id:"hip",n:"Hip thrust en multipower",s:3,r:"8",kg:1},
     {id:"curl",n:"Curl femoral en polea",s:3,r:"10",kg:1},
-    {id:"slcalf",n:"Elevación de talones a una pierna",s:3,r:"10",kg:1}]},
-  5:{t:"Tren superior B + core",corto:"Superior",ej:[
-    {id:"incl",n:"Press inclinado con mancuernas",s:3,r:"8",kg:1},
-    {id:"crow",n:"Remo en polea baja",s:3,r:"10",kg:1},
-    {id:"lat",n:"Jalón al pecho en polea",s:3,r:"10",kg:1},
-    {id:"lateral",n:"Elevaciones laterales",s:3,r:"12",kg:1},
-    {id:"side",n:"Plancha lateral",s:3,r:"30 s/lado"}]},
+    {id:"slcalf",n:"Elevación de talones a una pierna",s:3,r:"10",kg:1},
+    {id:"crunch",n:"Abdomen en polea alta, de rodillas",s:3,r:"12",kg:1},
+    {id:"pallof",n:"Pallof press en polea",s:3,r:"10/lado"}]},
+  5:{t:"Tirón: espalda y bíceps",corto:"Tirón",ej:[
+    {id:"pullup",n:"Dominadas",s:4,r:"6-8"},
+    {id:"smrow",n:"Remo en multipower apoyado en el banco",s:3,r:"10",kg:1},
+    {id:"latuni",n:"Jalón unilateral en polea",s:3,r:"10/brazo",kg:1},
+    {id:"pulldown",n:"Pull-down en polea con brazos rectos",s:3,r:"12",kg:1},
+    {id:"revfly",n:"Cruce de poleas para hombro posterior",s:3,r:"15",kg:1},
+    {id:"bayes",n:"Curl bayesiano en polea",s:3,r:"12/brazo",kg:1},
+    {id:"hammer",n:"Curl martillo en polea con cuerda",s:3,r:"12",kg:1}]},
   6:{t:"Opcional: sprints y aro",corto:"Opcional",ej:[
     {id:"spr",n:"Sprints de 20 m",s:6,r:"20 m"},
     {id:"hoop",n:"Saltos a canasta si tienes pista (calidad, no cantidad)",r:"5-8 saltos"}],
@@ -300,6 +305,22 @@ Object.assign(FIG,{
   side:{h:[90,48],s:[["n",82,52,82,73,92,73],["hi",82,52,52,62],["n",52,62,36,67,20,72],["n",82,52,84,36,86,22]]},
   spr:{h:[70,14],p:'<path d="M12 30 H28 M8 40 H26 M12 50 H28" class="ar"/>',s:[["f",66,22,74,30,80,20],["n",56,44,66,22],["hi",56,44,50,58,42,72],["n",56,44,70,42,64,58],["n",66,22,54,28,50,38]]},
   reach:{h:[60,14],p:'<line x1="80" y1="2" x2="80" y2="74" class="pr"/><path d="M76 4 H80 M76 14 H80 M76 24 H80 M76 34 H80" class="ar2"/>',s:[["n",60,46,60,23],["n",60,46,60,60,60,74],["hi",60,23,66,12,68,2]]}
+});
+/* Ejercicios de empuje, tirón y abdomen en polea */
+const POLEA=(x,y)=>`<circle cx="${x}" cy="${y}" r="3" class="plc"/>`;
+const CABLE=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="cable"/>`;
+Object.assign(FIG,{
+  cflyb:{h:[26,43],p:BANCO(20,92,50)+POLEA(8,70)+POLEA(104,70)+CABLE(40,14,8,70)+CABLE(40,14,104,70),s:[["n",36,47,70,47],["n",70,47,86,46,88,74],["hi",36,47,32,30],["n",32,30,40,14]]},
+  tri_alto:{h:[57,13],p:'<line x1="104" y1="2" x2="104" y2="74" class="pr"/>'+POLEA(100,6)+CABLE(70,46,100,6),s:[["n",56,46,58,22],["n",56,46,56,60,56,74],["hi",58,22,60,36],["n",60,36,70,46]]},
+  tri_bajo:{h:[60,15],p:'<line x1="10" y1="40" x2="10" y2="74" class="pr"/>'+POLEA(14,68)+CABLE(76,6,14,68),s:[["f",56,46,48,60,44,74],["n",56,46,58,24],["n",56,46,64,60,68,74],["hi",58,24,64,10],["n",64,10,76,6]]},
+  crunch:{h:[78,56],p:'<line x1="90" y1="2" x2="90" y2="30" class="pr"/>'+POLEA(86,4)+CABLE(74,46,86,4),s:[["n",52,56,50,72,34,73],["hi",52,56,70,52],["n",70,52,72,44,74,46]]},
+  pullup:{h:[65,16],p:'<line x1="30" y1="4" x2="92" y2="4" class="bar"/><line x1="32" y1="4" x2="32" y2="74" class="pr"/><line x1="90" y1="4" x2="90" y2="74" class="pr"/>',s:[["n",60,24,60,48],["n",60,48,63,60,56,70],["hi",60,24,52,14],["n",52,14,60,5]]},
+  smrow:{h:[74,30],p:'<line x1="22" y1="64" x2="76" y2="34" class="pr"/><line x1="30" y1="60" x2="30" y2="74" class="pr"/><line x1="64" y1="41" x2="64" y2="74" class="pr"/><line x1="16" y1="2" x2="16" y2="74" class="pr"/><line x1="106" y1="2" x2="106" y2="74" class="pr"/><circle cx="68" cy="60" r="6" class="plc"/>',s:[["n",34,53,66,36],["n",34,53,24,63,20,74],["hi",66,36,58,46],["n",58,46,68,58]]},
+  latuni:{h:[57,21],p:'<rect x="44" y="56" width="24" height="5" rx="1" class="st"/><line x1="56" y1="61" x2="56" y2="74" class="pr"/>'+CABLE(66,24,66,6)+POLEA(66,5),s:[["f",58,30,64,44,70,52],["n",56,54,58,30],["n",56,54,72,54,72,74],["hi",58,30,50,40],["n",50,40,66,24]]},
+  pulldown:{h:[65,17],p:'<line x1="104" y1="2" x2="104" y2="74" class="pr"/>'+POLEA(100,6)+CABLE(72,44,100,6),s:[["f",52,46,48,60,46,74],["n",52,46,60,24],["n",52,46,56,60,56,74],["hi",60,24,66,34],["n",66,34,72,44]]},
+  revfly:{h:[60,10],p:POLEA(8,6)+POLEA(112,6)+CABLE(24,22,112,6)+CABLE(96,22,8,6),s:[["n",60,17,60,44],["n",52,20,68,20],["n",54,44,66,44],["n",55,44,53,59,52,74],["n",65,44,67,59,68,74],["hi",52,20,38,21],["hi",68,20,82,21],["n",38,21,24,22],["n",82,21,96,22]]},
+  bayes:{h:[64,13],p:'<line x1="10" y1="40" x2="10" y2="74" class="pr"/>'+POLEA(14,68)+CABLE(62,24,14,68),s:[["f",60,46,52,60,50,74],["n",60,46,62,22],["n",60,46,66,60,70,74],["hi",62,22,54,34],["n",54,34,62,24]]},
+  hammer:{h:[57,13],p:'<line x1="106" y1="40" x2="106" y2="74" class="pr"/>'+POLEA(102,70)+CABLE(68,28,102,70),s:[["n",56,46,56,22],["n",56,46,56,60,56,74],["n",56,22,58,36],["hi",58,36,68,28]]}
 });
 const ALIAS={cal:"skip",hoop:"appr",j2:"appr",j1:"slhop",sqt:"sq"};
 function fig(id){const f=FIG[id]||FIG[ALIAS[id]];if(!f)return "";
@@ -468,7 +489,7 @@ function renderPlan(){
   $("view").innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
   ${avisosHTML()}${testsHTML()}
   <section class="card"><div class="lbl">Fase 1 · semanas 1-16</div><h3>Fuerza base y aprender a saltar</h3>
-    <div class="tpl"><b>LUN</b><span>Pierna A · fuerza</span><b>MAR</b><span>Tren superior A + core</span><b>MIÉ</b><span>Saltos y técnica (suave)</span><b>JUE</b><span>Pierna B · unilateral</span><b>VIE</b><span>Tren superior B + core</span><b>SÁB</b><span>Opcional: sprints y aro</span><b>DOM</b><span>Descanso</span><b>DIARIO</b><span>Estiramientos de la noche, ${EST.noche.min} min</span></div></section>
+    <div class="tpl"><b>LUN</b><span>Pierna A · fuerza</span><b>MAR</b><span>Empuje: pecho, hombro y tríceps + core</span><b>MIÉ</b><span>Saltos y técnica (suave)</span><b>JUE</b><span>Pierna B · unilateral + core</span><b>VIE</b><span>Tirón: espalda y bíceps</span><b>SÁB</b><span>Opcional: sprints y aro</span><b>DOM</b><span>Descanso</span><b>DIARIO</b><span>Estiramientos de la noche, ${EST.noche.min} min</span></div></section>
   <section class="card"><h3>Calendario</h3><div class="weeks">${w}</div></section>
   <section class="card"><h3>Reglas</h3><ul class="rules">
     <li>Termina cada serie de fuerza con la sensación de que podrías hacer 2 repeticiones más.</li>
